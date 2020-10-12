@@ -7,15 +7,18 @@ function setup() {
     canvas.height = window.innerHeight;
     gameState.lastTick = performance.now();
     gameState.lastRender = gameState.lastTick;
-    gameState.tickLength = 200; //ms
+    gameState.tickLength = 150; //ms
 
     gameState.snake = {
-        x: grid*10,
-        y: grid*15,
+        x: grid*5,
+        y: grid*5,
         vx: grid,
         vy: 0,
         cells: [],
         l: 5
+    }
+    for (let i = 0; i < gameState.snake.l; i++){
+        gameState.snake.cells.push({ x: gameState.snake.x - grid*i, y: gameState.snake.y });
     }
 }
 
@@ -34,10 +37,8 @@ function run(tFrame) {
 
 function draw(tFrame) {
     const context = canvas.getContext('2d');
-
     //clear canvas
     context.clearRect(0,0, canvas.width, canvas.height)
-
     //draw
     const snake = gameState.snake;
     snake.cells.forEach(function (cell,index) {
@@ -54,7 +55,7 @@ function draw(tFrame) {
             }
         }
     })
-    }
+}
 
 function update(tick){
     const snake = gameState.snake;
@@ -65,8 +66,6 @@ function update(tick){
     snake.y += snake.vy;
     snake.cells.unshift({ x: snake.x, y: snake.y });
     if (snake.cells.length > snake.l) { snake.cells.pop(); }
-
-
     document.addEventListener('keydown', event =>{
         if ((event.code === 'KeyW'||event.code === 'ArrowUp') && snake.vy === 0){
             snake.vy = -grid;
@@ -85,7 +84,6 @@ function update(tick){
             snake.vy = 0;
         }
     })
-
 }
 
 function stopGame(handle){
@@ -94,8 +92,7 @@ function stopGame(handle){
     GameOverAudio.play();
     document.body.style.background = "#ff0000";
     const snake = gameState.snake;
-    snake.vy = 0;
-    snake.vx = 0;
+    snake.l++;
 }
 
 function queueUpdates(numTicks){
