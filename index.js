@@ -1,13 +1,13 @@
 const canvas = document.getElementById("cnvs");
 const gameState = {};
-const grid = 20
+const grid = 50
 
 function setup() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     gameState.lastTick = performance.now();
     gameState.lastRender = gameState.lastTick;
-    gameState.tickLength = 150; //ms
+    gameState.tickLength = 200; //ms
 
     gameState.snake = {
         x: grid*5,
@@ -15,7 +15,7 @@ function setup() {
         vx: grid,
         vy: 0,
         cells: [],
-        l: 5
+        l: 6
     }
     for (let i = 0; i < gameState.snake.l; i++){
         gameState.snake.cells.push({ x: gameState.snake.x - grid*i, y: gameState.snake.y });
@@ -44,10 +44,38 @@ function draw(tFrame) {
     snake.cells.forEach(function (cell,index) {
         context.fillStyle = '#114400'
         context.fillRect(cell.x, cell.y, grid, grid);
-        context.fillStyle = '#000000'
-        context.fillRect(cell.x+2, cell.y+2, grid-4, grid-4);
-        context.fillStyle = '#114400'
-        context.fillRect(cell.x+6, cell.y+6, grid-12, grid-12);
+        context.fillStyle = '#000000';
+        if (snake.cells.indexOf(cell)!==0){
+            context.fillRect(cell.x+2, cell.y+2, grid-4, grid-4);
+            context.fillStyle = '#114400'
+            context.fillRect(cell.x+6, cell.y+6, grid-12, grid-12);
+        }
+        else if (snake.cells.indexOf(cell)===0) {
+            if (snake.vx === grid && snake.vy === 0) {
+                context.fillRect(cell.x+3*grid/5, cell.y+grid/5, grid/5, grid/5);
+                context.fillRect(cell.x+3*grid/5, cell.y+3*grid/5, grid/5, grid/5);
+                context.fillStyle = '#ff0000'
+                context.fillRect(cell.x+grid, cell.y+2*grid/5, grid/5, grid/5);
+            }
+            else if (snake.vx === -grid && snake.vy === 0) {
+                context.fillRect(cell.x+grid/5, cell.y+grid/5, grid/5, grid/5);
+                context.fillRect(cell.x+grid/5, cell.y+3*grid/5, grid/5, grid/5);
+                context.fillStyle = '#ff0000'
+                context.fillRect(cell.x-grid/5, cell.y+2*grid/5, grid/5, grid/5);
+            }
+            else if (snake.vx === 0 && snake.vy === grid) {
+                context.fillRect(cell.x+grid/5, cell.y+3*grid/5, grid/5, grid/5);
+                context.fillRect(cell.x+3*grid/5, cell.y+3*grid/5, grid/5, grid/5);
+                context.fillStyle = '#ff0000'
+                context.fillRect(cell.x+2*grid/5, cell.y+grid, grid/5, grid/5);
+            }
+            else if (snake.vx === 0 && snake.vy === -grid) {
+                context.fillRect(cell.x+grid/5, cell.y+grid/5, grid/5, grid/5);
+                context.fillRect(cell.x+3*grid/5, cell.y+grid/5, grid/5, grid/5);
+                context.fillStyle = '#ff0000'
+                context.fillRect(cell.x+2*grid/5, cell.y-grid/5, grid/5, grid/5);
+            }
+        };
         //context.fillText(snake.cells.indexOf(cell).toString(), cell.x, cell.y)
         for (let i = index + 1; i < snake.cells.length; i++) {
             if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
