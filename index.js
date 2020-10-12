@@ -1,6 +1,6 @@
 const canvas = document.getElementById("cnvs");
 const gameState = {};
-const grid = 50
+const grid = 50;
 
 function setup() {
     canvas.width = window.innerWidth;
@@ -15,8 +15,16 @@ function setup() {
         vx: grid,
         vy: 0,
         cells: [],
-        l: 6
+        l: 6,
+        color: '#114400'
     }
+
+    gameState.food = {
+        x: grid,
+        y: grid,
+        color: '#ffaa00'
+    }
+
     for (let i = 0; i < gameState.snake.l; i++){
         gameState.snake.cells.push({ x: gameState.snake.x - grid*i, y: gameState.snake.y });
     }
@@ -35,19 +43,30 @@ function run(tFrame) {
     gameState.lastRender = tFrame;
 }
 
+function randomInt(from,to){
+    return Math.floor(Math.random()*(to - from)+from);
+}
+
 function draw(tFrame) {
     const context = canvas.getContext('2d');
+    const gridX = Math.floor(canvas.width/grid);
+    const gridY = Math.floor(canvas.height/grid);
     //clear canvas
     context.clearRect(0,0, canvas.width, canvas.height)
     //draw
+    const food = gameState.food;
+
+    context.fillStyle = food.color
+    context.fillRect(food.x+grid/4, food.y+grid/4, grid/2, grid/2);
+
     const snake = gameState.snake;
     snake.cells.forEach(function (cell,index) {
-        context.fillStyle = '#114400'
+        context.fillStyle = snake.color;
         context.fillRect(cell.x, cell.y, grid, grid);
         context.fillStyle = '#000000';
         if (snake.cells.indexOf(cell)!==0){
             context.fillRect(cell.x+2, cell.y+2, grid-4, grid-4);
-            context.fillStyle = '#114400'
+            context.fillStyle = snake.color;
             context.fillRect(cell.x+6, cell.y+6, grid-12, grid-12);
         }
         else if (snake.cells.indexOf(cell)===0) {
@@ -76,8 +95,23 @@ function draw(tFrame) {
                 context.fillRect(cell.x+2*grid/5, cell.y-grid/5, grid/5, grid/5);
             }
         };
-        //context.fillText(snake.cells.indexOf(cell).toString(), cell.x, cell.y)
-        for (let i = index + 1; i < snake.cells.length; i++) {
+        context.fillText(snake.cells.indexOf(cell).toString(), cell.x, cell.y)
+
+        if (cell.x === food.x && cell.y === food.y) {
+            snake.l++;
+            let bool = 0;
+            while (bool===0) {
+                food.x = randomInt(1,gridX)*grid;
+                food.y = randomInt(1,gridY)*grid;
+                bool = 1;
+                for (let i = 0; i < snake.cells.length; i++) {
+                    if (food.x === snake.cells[i].x && food.y === snake.cells[i].y) {
+                        bool = 0;
+                    }
+                }
+            }
+        }
+        for (let i = index + 1; i <= snake.cells.length; i++) {
             if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
                 stopGame(gameState.stopCycle);
             }
