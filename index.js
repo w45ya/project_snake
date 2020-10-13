@@ -13,11 +13,11 @@ function setup() {
 
     gameState.snake = {
         x: grid*5,
-        y: grid*5,
+        y: grid*1,
         vx: grid,
         vy: 0,
         cells: [],
-        l: 6,
+        l: 5,
         color: '#114400'
     }
 
@@ -25,6 +25,12 @@ function setup() {
         x: grid,
         y: grid,
         color: '#ffaa00'
+    }
+
+    gameState.antiFood = {
+        x: grid,
+        y: grid,
+        color: "#6201ff"
     }
 
     for (let i = 0; i < gameState.snake.l; i++){
@@ -57,9 +63,12 @@ function draw(tFrame) {
     context.clearRect(0,0, canvas.width, canvas.height)
     //draw
     const food = gameState.food;
-
+    const antiFood = gameState.antiFood;
     context.fillStyle = food.color;
     context.fillRect(food.x+grid/4, food.y+grid/4, grid/2, grid/2);
+
+    context.fillStyle = antiFood.color;
+    context.fillRect(antiFood.x+grid/3, antiFood.y+grid/3, grid/3, grid/3);
 
     const snake = gameState.snake;
     snake.cells.forEach(function (cell,index) {
@@ -114,11 +123,28 @@ function draw(tFrame) {
                 }
             }
         }
+        if (cell.x === antiFood.x && cell.y === antiFood.y) {
+            snake.l--;
+            snake.cells.pop();
+            FoodEat.play();
+            let bool = 0;
+            while (bool===0) {
+                antiFood.x = randomInt(1,gridX)*grid;
+                antiFood.y = randomInt(1,gridY)*grid;
+                bool = 1;
+                for (let i = 0; i < snake.cells.length; i++) {
+                    if (antiFood.x === snake.cells[i].x && antiFood.y === snake.cells[i].y) {
+                        bool = 0;
+                    }
+                }
+            }
+        }
         for (let i = index + 1; i < snake.cells.length; i++) {
             if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
                 stopGame(gameState.stopCycle);
             }
         }
+        if (snake.l<=0) {stopGame(gameState.stopCycle);}
     })
 }
 
@@ -132,19 +158,19 @@ function update(tick){
     snake.cells.unshift({ x: snake.x, y: snake.y });
     if (snake.cells.length > snake.l) { snake.cells.pop(); }
     document.addEventListener('keydown', event =>{
-        if ((event.code === 'KeyW'||event.code === 'ArrowUp') && snake.vy === 0){
+        if ((event.code === 'KeyW'||event.code === 'ArrowUp') && snake.vy === 0 && (snake.l === 1 || snake.cells[1].y !== snake.cells[0].y - grid)){
             snake.vy = -grid;
             snake.vx = 0;
         }
-        else if ((event.code === 'KeyS'||event.code === 'ArrowDown') && snake.vy === 0){
+        else if ((event.code === 'KeyS'||event.code === 'ArrowDown') && snake.vy === 0 && (snake.l === 1 || snake.cells[1].y !== snake.cells[0].y + grid)){
             snake.vy = grid;
             snake.vx = 0;
         }
-        else if ((event.code === 'KeyA'||event.code === 'ArrowLeft') && snake.vx === 0){
+        else if ((event.code === 'KeyA'||event.code === 'ArrowLeft') && snake.vx === 0 && (snake.l === 1 || snake.cells[1].x !== snake.cells[0].x - grid)){
             snake.vx = -grid;
             snake.vy = 0;
         }
-        else if ((event.code === 'KeyD'||event.code === 'ArrowRight') && snake.vx === 0){
+        else if ((event.code === 'KeyD'||event.code === 'ArrowRight') && snake.vx === 0 && (snake.l === 1 || snake.cells[1].x !== snake.cells[0].x + grid)){
             snake.vx = grid;
             snake.vy = 0;
         }
