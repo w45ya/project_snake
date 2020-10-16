@@ -3,6 +3,8 @@ const gameState = {};
 const grid = 50;
 const GameOverAudio = new Audio('./data/GameOver.mp3');
 const FoodEat = new Audio('./data/FoodEat.mp3');
+let FirstTurn = 0;
+let SoundSet = 1;
 
 function setup() {
     canvas.width = window.innerWidth;
@@ -71,10 +73,18 @@ function draw(tFrame) {
     context.fillRect(antiFood.x+grid/3, antiFood.y+grid/3, grid/3, grid/3);
 
     const snake = gameState.snake;
+	if (FirstTurn === 0) {
+		food.x = randomInt(1,gridX)*grid;
+		food.y = randomInt(1,gridY)*grid;
+		antiFood.x = randomInt(1,gridX)*grid;
+		antiFood.y = randomInt(1,gridY)*grid;
+		FirstTurn = 1;
+	}
+	if (snake.l<=0) {stopGame(gameState.stopCycle);}
     snake.cells.forEach(function (cell,index) {
         context.fillStyle = snake.color;
         context.fillRect(cell.x, cell.y, grid, grid);
-       context.fillStyle = '#000000';
+        context.fillStyle = '#000000';
         if (snake.cells.indexOf(cell)!==0){
             context.fillRect(cell.x+2, cell.y+2, grid-4, grid-4);
             context.fillStyle = snake.color;
@@ -144,7 +154,6 @@ function draw(tFrame) {
                 stopGame(gameState.stopCycle);
             }
         }
-        if (snake.l<=0) {stopGame(gameState.stopCycle);}
     })
 }
 
