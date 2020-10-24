@@ -210,39 +210,66 @@ function draw(tFrame) {
 
 function update(tick){
     const snake = gameState.snake;
-    if (snake.y > canvas.height || snake.y < 0 ||
-        snake.x > canvas.width || snake.x < 0)
-    {stopGame(gameState.stopCycle);}
     snake.x += snake.vx;
     snake.y += snake.vy;
     snake.cells.unshift({ x: snake.x, y: snake.y });
     if (snake.cells.length > snake.l) { snake.cells.pop(); }
+    if (snake.y > canvas.height || snake.y < 0 || snake.x > canvas.width || snake.x < 0) {
+        stopGame(gameState.stopCycle);
+    }
+
     document.addEventListener('keydown', event =>{
-        if ((event.code === 'KeyW'||event.code === 'ArrowUp') && snake.vy === 0 && (snake.l === 1 || snake.cells[1].y !== snake.cells[0].y - grid)){
+        if ((event.code === 'KeyW' || event.code === 'ArrowUp') && snake.vy === 0 && (snake.l === 1 || snake.cells[1].y !== snake.cells[0].y - grid)){
             snake.vy = -grid;
             snake.vx = 0;
         }
-        else if ((event.code === 'KeyS'||event.code === 'ArrowDown') && snake.vy === 0 && (snake.l === 1 || snake.cells[1].y !== snake.cells[0].y + grid)){
+        else if ((event.code === 'KeyS' || event.code === 'ArrowDown') && snake.vy === 0 && (snake.l === 1 || snake.cells[1].y !== snake.cells[0].y + grid)){
             snake.vy = grid;
             snake.vx = 0;
         }
-        else if ((event.code === 'KeyA'||event.code === 'ArrowLeft') && snake.vx === 0 && (snake.l === 1 || snake.cells[1].x !== snake.cells[0].x - grid)){
+        else if ((event.code === 'KeyA' || event.code === 'ArrowLeft') && snake.vx === 0 && (snake.l === 1 || snake.cells[1].x !== snake.cells[0].x - grid)){
             snake.vx = -grid;
             snake.vy = 0;
         }
-        else if ((event.code === 'KeyD'||event.code === 'ArrowRight') && snake.vx === 0 && (snake.l === 1 || snake.cells[1].x !== snake.cells[0].x + grid)){
+        else if ((event.code === 'KeyD' || event.code === 'ArrowRight') && snake.vx === 0 && (snake.l === 1 || snake.cells[1].x !== snake.cells[0].x + grid)){
             snake.vx = grid;
             snake.vy = 0;
         }
-        else if (event.code === 'KeyQ') {
-            if (SoundSet===0){SoundSet=1}
-            else if (SoundSet===1) {SoundSet=0}
+        else if (event.code === 'KeyZ') {
+            SoundSet=1
+        }
+        else if (event.code === 'KeyX') {
+            SoundSet=0
         }
         else if (event.code === 'KeyI') {
-            if (ShowInfo===0){ShowInfo=1}
-            else if (ShowInfo===1) {ShowInfo=0}
+            ShowInfo=1
+        }
+        else if (event.code === 'KeyO') {
+            ShowInfo=0
         }
     })
+    const gamepad = navigator.getGamepads()[0];
+    const gamepadUp = gamepad.buttons[12];
+    const gamepadDown = gamepad.buttons[13];
+    const gamepadLeft = gamepad.buttons[14];
+    const gamepadRight = gamepad.buttons[15];
+    if (gamepadUp.touched && snake.vy === 0 && (snake.l === 1 || snake.cells[1].y !== snake.cells[0].y - grid)){
+        snake.vy = -grid;
+        snake.vx = 0;
+    }
+    if (gamepadDown.touched && snake.vy === 0 && (snake.l === 1 || snake.cells[1].y !== snake.cells[0].y + grid)){
+        snake.vy = grid;
+        snake.vx = 0;
+    }
+    if (gamepadLeft.touched && snake.vx === 0 && (snake.l === 1 || snake.cells[1].x !== snake.cells[0].x - grid)){
+        snake.vy = 0;
+        snake.vx = -grid;
+    }
+    if (gamepadRight.touched && snake.vx === 0 && (snake.l === 1 || snake.cells[1].x !== snake.cells[0].x + grid)){
+        snake.vy = 0;
+        snake.vx = grid;
+    }
+
 }
 
 function stopGame(handle){
