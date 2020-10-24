@@ -3,8 +3,9 @@ const gameState = {};
 const grid = 50;
 const GameOverAudio = new Audio('./data/GameOver.mp3');
 const FoodEat = new Audio('./data/FoodEat.mp3');
-let FirstTurn = 0;
+let FrameRate = 0;
 let SoundSet = 1;
+let ShowInfo = 1;
 
 function setup() {
     canvas.width = window.innerWidth;
@@ -15,7 +16,7 @@ function setup() {
 
     gameState.snake = {
         x: grid*5,
-        y: grid*1,
+        y: grid,
         vx: grid,
         vy: 0,
         cells: [],
@@ -24,8 +25,8 @@ function setup() {
     }
 
     gameState.food = {
-        x: grid,
-        y: grid,
+        x: 0,
+        y: 0,
         color: '#ffaa00'
     }
 
@@ -33,6 +34,16 @@ function setup() {
         x: grid,
         y: grid,
         color: "#6201ff"
+    }
+
+    gameState.superFruit = {
+        x: -grid,
+        y: -grid,
+        isOnScreen: 0,
+        color1: "#ff0000",
+        color2: "#004200",
+        appearTime: 0,
+        lifeCycle: 200
     }
 
     for (let i = 0; i < gameState.snake.l; i++){
@@ -57,29 +68,77 @@ function randomInt(from,to){
     return Math.floor(Math.random()*(to - from)+from);
 }
 
+function freeCell(snake,food,antiFood,superFruit){
+    const gridX = Math.floor(canvas.width/grid);
+    const gridY = Math.floor(canvas.height/grid);
+    let x,y,bool = 0;
+    while (bool===0) {
+        x = randomInt(1,gridX)*grid;
+        y = randomInt(1,gridY)*grid;
+        bool = 1;
+        for (let i = 0; i < snake.cells.length; i++) {
+            if (x === snake.cells[i].x && y === snake.cells[i].y) {
+                bool = 0;
+            }
+        }
+        if ((x === food.x && y === food.y)||(x === antiFood.x && y === antiFood.y)||(x === superFruit.x && y === superFruit.y)) {
+            bool = 0;
+        }
+    }
+    return {x: x,y: y};
+}
+
 function draw(tFrame) {
+    FrameRate++;
     const context = canvas.getContext('2d');
     const gridX = Math.floor(canvas.width/grid);
     const gridY = Math.floor(canvas.height/grid);
-    //clear canvas
-    context.clearRect(0,0, canvas.width, canvas.height)
-    //draw
     const food = gameState.food;
     const antiFood = gameState.antiFood;
+    const snake = gameState.snake;
+    const superFruit = gameState.superFruit;
+    if (FrameRate === 1) {
+        food.x = randomInt(1,gridX)*grid;
+        food.y = randomInt(1,gridY)*grid;
+        antiFood.x = randomInt(1,gridX)*grid;
+        antiFood.y = randomInt(1,gridY)*grid;
+    }
+
+    //clear canvas
+    context.clearRect(0,0, canvas.width, canvas.height)
+
+    //draw
+    if (ShowInfo===1){
+        context.fillStyle = "#ffffff";
+        context.fillText(`FrameRate: `+FrameRate,0,10);
+        context.fillText(`SnakeLength: `+snake.l,0,20);
+        context.fillText(`SoundSet: `+SoundSet,0,30);
+    }
     context.fillStyle = food.color;
     context.fillRect(food.x+grid/4, food.y+grid/4, grid/2, grid/2);
 
     context.fillStyle = antiFood.color;
     context.fillRect(antiFood.x+grid/3, antiFood.y+grid/3, grid/3, grid/3);
 
-    const snake = gameState.snake;
-	if (FirstTurn === 0) {
-		food.x = randomInt(1,gridX)*grid;
-		food.y = randomInt(1,gridY)*grid;
-		antiFood.x = randomInt(1,gridX)*grid;
-		antiFood.y = randomInt(1,gridY)*grid;
-		FirstTurn = 1;
-	}
+    context.fillStyle = superFruit.color1;
+    context.fillRect(superFruit.x+grid/4, superFruit.y+grid/4, grid/2, grid/2);
+    context.fillStyle = superFruit.color2;
+    context.fillRect(superFruit.x+grid/2, superFruit.y+2, grid/5, grid/5);
+
+    if (FrameRate % 300 === 0 && superFruit.isOnScreen===0){
+        superFruit.appearTime = FrameRate;
+        superFruit.isOnScreen = 1;
+        const cell = freeCell(snake,food,antiFood,superFruit);
+        superFruit.x = cell.x;
+        superFruit.y = cell.y;
+    }
+    if (FrameRate-superFruit.appearTime===superFruit.lifeCycle){
+        superFruit.isOnScreen = 0;
+        superFruit.x = -grid;
+        superFruit.y = -grid;
+        superFruit.appearTime = 0;
+    }
+
 	if (snake.l<=0) {stopGame(gameState.stopCycle);}
     snake.cells.forEach(function (cell,index) {
         context.fillStyle = snake.color;
@@ -115,40 +174,32 @@ function draw(tFrame) {
                 context.fillStyle = '#ff0000'
                 context.fillRect(cell.x+2*grid/5, cell.y-grid/5, grid/5, grid/5);
             }
-        };
-        //context.fillText(snake.cells.indexOf(cell).toString(), cell.x, cell.y)
+        }
+       //context.fillText(snake.cells.indexOf(cell).toString(), cell.x, cell.y)
 
         if (cell.x === food.x && cell.y === food.y) {
             snake.l++;
-            FoodEat.play();
-            let bool = 0;
-            while (bool===0) {
-                food.x = randomInt(1,gridX)*grid;
-                food.y = randomInt(1,gridY)*grid;
-                bool = 1;
-                for (let i = 0; i < snake.cells.length; i++) {
-                    if (food.x === snake.cells[i].x && food.y === snake.cells[i].y) {
-                        bool = 0;
-                    }
-                }
-            }
+            if (SoundSet===1){FoodEat.play();}
+            const cell = freeCell(snake,food,antiFood,superFruit);
+            food.x = cell.x;
+            food.y = cell.y;
         }
         if (cell.x === antiFood.x && cell.y === antiFood.y) {
             snake.l--;
             snake.cells.pop();
-            FoodEat.play();
-            let bool = 0;
-            while (bool===0) {
-                antiFood.x = randomInt(1,gridX)*grid;
-                antiFood.y = randomInt(1,gridY)*grid;
-                bool = 1;
-                for (let i = 0; i < snake.cells.length; i++) {
-                    if (antiFood.x === snake.cells[i].x && antiFood.y === snake.cells[i].y) {
-                        bool = 0;
-                    }
-                }
-            }
+            if (SoundSet===1){FoodEat.play();}
+            const cell = freeCell(snake,food,antiFood,superFruit);
+            antiFood.x = cell.x;
+            antiFood.y = cell.y;
         }
+        if (cell.x === superFruit.x && cell.y === superFruit.y) {
+            snake.l*=2;
+            if (SoundSet===1){FoodEat.play();}
+            superFruit.isOnScreen = 0;
+            superFruit.x = -grid;
+            superFruit.y = -grid;
+        }
+
         for (let i = index + 1; i < snake.cells.length; i++) {
             if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
                 stopGame(gameState.stopCycle);
@@ -183,12 +234,20 @@ function update(tick){
             snake.vx = grid;
             snake.vy = 0;
         }
+        else if (event.code === 'KeyQ') {
+            if (SoundSet===0){SoundSet=1}
+            else if (SoundSet===1) {SoundSet=0}
+        }
+        else if (event.code === 'KeyI') {
+            if (ShowInfo===0){ShowInfo=1}
+            else if (ShowInfo===1) {ShowInfo=0}
+        }
     })
 }
 
 function stopGame(handle){
     window.cancelAnimationFrame(handle);
-    GameOverAudio.play();
+    if (SoundSet===1){GameOverAudio.play();}
     document.body.style.background = "#ff0000";
     const snake = gameState.snake;
     snake.l++;
