@@ -1,0 +1,28 @@
+.main-header, .container{
+    font-size: 20px;
+}
+
+.main-header {
+    padding: 20px;
+    background: #2b4748;
+    color: aliceblue;
+}
+.main-header > .login {
+    float: right;
+}
+.vertical {
+    top: 50%;
+    transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+}
+
+.container{
+    display: flex;
+    float: left;
+
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+
+    position: absolute;
+}

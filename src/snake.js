@@ -7,11 +7,12 @@ let audioUrl = require('../data/GameOver.mp3');
 const GameOverAudio = new Audio(audioUrl);
 audioUrl = require('../data/FoodEat.mp3');
 const FoodEat = new Audio(audioUrl);
-let FrameRate = 0;
+let FrameCount = 0;
 let SoundSet = 1;
 let ShowInfo = 1;
 
 function setup() {
+    document.body.style.background = "#000000";
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     gameState.lastTick = performance.now();
@@ -93,7 +94,7 @@ function freeCell(snake,food,antiFood,superFruit){
 }
 
 function draw(tFrame) {
-    FrameRate++;
+    FrameCount++;
     const context = canvas.getContext('2d');
     const gridX = Math.floor(canvas.width/grid);
     const gridY = Math.floor(canvas.height/grid);
@@ -101,7 +102,7 @@ function draw(tFrame) {
     const antiFood = gameState.antiFood;
     const snake = gameState.snake;
     const superFruit = gameState.superFruit;
-    if (FrameRate === 1) {
+    if (FrameCount === 1) {
         food.x = randomInt(1,gridX)*grid;
         food.y = randomInt(1,gridY)*grid;
         antiFood.x = randomInt(1,gridX)*grid;
@@ -112,12 +113,7 @@ function draw(tFrame) {
     context.clearRect(0,0, canvas.width, canvas.height)
 
     //draw
-    if (ShowInfo===1){
-        context.fillStyle = "#ffffff";
-        context.fillText(`FrameRate: `+FrameRate,0,10);
-        context.fillText(`SnakeLength: `+snake.l,0,20);
-        context.fillText(`SoundSet: `+SoundSet,0,30);
-    }
+
     context.fillStyle = food.color;
     context.fillRect(food.x+grid/4, food.y+grid/4, grid/2, grid/2);
 
@@ -129,14 +125,14 @@ function draw(tFrame) {
     context.fillStyle = superFruit.color2;
     context.fillRect(superFruit.x+grid/2, superFruit.y+2, grid/5, grid/5);
 
-    if (FrameRate % 300 === 0 && superFruit.isOnScreen===0){
-        superFruit.appearTime = FrameRate;
+    if (FrameCount % 300 === 0 && superFruit.isOnScreen===0){
+        superFruit.appearTime = FrameCount;
         superFruit.isOnScreen = 1;
         const cell = freeCell(snake,food,antiFood,superFruit);
         superFruit.x = cell.x;
         superFruit.y = cell.y;
     }
-    if (FrameRate-superFruit.appearTime===superFruit.lifeCycle){
+    if (FrameCount-superFruit.appearTime===superFruit.lifeCycle){
         superFruit.isOnScreen = 0;
         superFruit.x = -grid;
         superFruit.y = -grid;
@@ -210,6 +206,12 @@ function draw(tFrame) {
             }
         }
     })
+    if (ShowInfo===1){
+        context.fillStyle = "#ffffff";
+        context.fillText(`Frames: `+FrameCount,0,10);
+        context.fillText(`SnakeLength: `+snake.l,0,20);
+        context.fillText(`SoundSet: `+SoundSet,0,30);
+    }
 }
 
 function update(tick){
