@@ -1,8 +1,12 @@
 const canvas = document.getElementById("cnvs");
 const gameState = {};
 const grid = 50;
-const GameOverAudio = new Audio('./data/GameOver.mp3');
-const FoodEat = new Audio('./data/FoodEat.mp3');
+//const GameOverAudio = new Audio(./data/GameOver.mp3');
+//const FoodEat = new Audio(./data/FoodEat.mp3');
+let audioUrl = require('../data/GameOver.mp3');
+const GameOverAudio = new Audio(audioUrl);
+audioUrl = require('../data/FoodEat.mp3');
+const FoodEat = new Audio(audioUrl);
 let FrameRate = 0;
 let SoundSet = 1;
 let ShowInfo = 1;
