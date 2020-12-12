@@ -37,19 +37,26 @@ function setup() {
     }
 
     gameState.antiFood = {
-        x: grid,
-        y: grid,
-        color: "#6201ff"
+        x: -grid,
+        y: -grid,
+        color: "#6201ff",
+        isOnScreen: 0,
+        isOnScreenTimer: 0,
+        appearTime: 300,
+        lifeCycle: 700,
+        timer: 0
     }
 
     gameState.superFruit = {
         x: -grid,
         y: -grid,
         isOnScreen: 0,
+        isOnScreenTimer: 0,
         color1: "#ff0000",
         color2: "#004200",
-        appearTime: 0,
-        lifeCycle: 300
+        appearTime: 500,
+        lifeCycle: 300,
+        timer: 0
     }
 
     for (let i = 0; i < gameState.snake.l; i++){
@@ -106,8 +113,6 @@ function draw(tFrame) {
     if (FrameCount === 1) {
         food.x = randomInt(1,gridX)*grid;
         food.y = randomInt(1,gridY)*grid;
-        antiFood.x = randomInt(1,gridX)*grid;
-        antiFood.y = randomInt(1,gridY)*grid;
     }
 
     //clear canvas
@@ -126,20 +131,50 @@ function draw(tFrame) {
     context.fillStyle = superFruit.color2;
     context.fillRect(superFruit.x+grid/2, superFruit.y+2, grid/5, grid/5);
 
-    if (FrameCount % 300 === 0 && superFruit.isOnScreen===0){
-        superFruit.appearTime = FrameCount;
-        superFruit.isOnScreen = 1;
-        const cell = freeCell(snake,food,antiFood,superFruit);
-        superFruit.x = cell.x;
-        superFruit.y = cell.y;
+    if (antiFood.isOnScreen===0){
+        if(antiFood.timer < antiFood.appearTime){
+            antiFood.timer += 1;
+        }
+        if (antiFood.timer === antiFood.appearTime){
+            const cell = freeCell(snake,food,antiFood,superFruit);
+            antiFood.x = cell.x;
+            antiFood.y = cell.y;
+            antiFood.isOnScreen = 1;
+            antiFood.timer = 0;
+        }
     }
-    if (FrameCount-superFruit.appearTime===superFruit.lifeCycle){
-        superFruit.isOnScreen = 0;
-        superFruit.x = -grid;
-        superFruit.y = -grid;
-        superFruit.appearTime = 0;
+    if (antiFood.isOnScreen){
+        antiFood.isOnScreenTimer += 1;
+        if (antiFood.isOnScreenTimer === antiFood.lifeCycle){
+            antiFood.isOnScreen = 0;
+            antiFood.x = -grid;
+            antiFood.y = -grid;
+            antiFood.isOnScreenTimer = 0;
+        }
     }
 
+    if (superFruit.isOnScreen===0){
+        if(superFruit.timer < superFruit.appearTime){
+            superFruit.timer += 1;
+        }
+        if (superFruit.timer === superFruit.appearTime){
+            const cell = freeCell(snake,food,antiFood,superFruit);
+            superFruit.x = cell.x;
+            superFruit.y = cell.y;
+            superFruit.isOnScreen = 1;
+            superFruit.timer = 0;
+        }
+    }
+    if (superFruit.isOnScreen){
+        superFruit.isOnScreenTimer += 1;
+        if (superFruit.isOnScreenTimer === superFruit.lifeCycle){
+            superFruit.isOnScreen = 0;
+            superFruit.x = -grid;
+            superFruit.y = -grid;
+            superFruit.isOnScreenTimer = 0;
+        }
+    }
+    console.log(superFruit.timer, superFruit.appearTime)
 	if (snake.l<=0) {stopGame(gameState.stopCycle);}
     snake.cells.forEach(function (cell,index) {
         context.fillStyle = snake.color;
@@ -190,13 +225,16 @@ function draw(tFrame) {
             snake.cells.pop();
             if (SoundSet===1){FoodEat.play();}
             const cell = freeCell(snake,food,antiFood,superFruit);
-            antiFood.x = cell.x;
-            antiFood.y = cell.y;
+            antiFood.isOnScreen = 0;
+            antiFood.isOnScreenTimer = 0;
+            antiFood.x = -grid;
+            antiFood.y = -grid;
         }
         if (cell.x === superFruit.x && cell.y === superFruit.y) {
             snake.l*=2;
             if (SoundSet===1){FoodEat.play();}
             superFruit.isOnScreen = 0;
+            superFruit.isOnScreenTimer = 0;
             superFruit.x = -grid;
             superFruit.y = -grid;
         }
@@ -285,8 +323,10 @@ function stopGame(handle){
     canvas.style.background = "#ff0000";
     const snake = gameState.snake;
     snake.l++;
-    playButton.style.display = "block";
-    canvas.style.display = "none";
+    setTimeout(() => {
+        playButton.style.display = "block";
+        canvas.style.display = "none";
+    }, 10500);
 }
 
 function queueUpdates(numTicks){
