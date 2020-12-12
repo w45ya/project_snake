@@ -132,14 +132,15 @@ var audioUrl = require('../data/GameOver.mp3');
 var GameOverAudio = new Audio(audioUrl);
 audioUrl = require('../data/FoodEat.mp3');
 var FoodEat = new Audio(audioUrl);
+var playButton = document.getElementById('playButton');
 var FrameCount = 0;
 var SoundSet = 1;
 var ShowInfo = 1;
 
 function setup() {
-  document.body.style.background = "#000000";
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.style.background = "#000000";
+  canvas.width = window.innerWidth - 20 - (window.innerWidth - 20) % grid - 1;
+  canvas.height = window.innerHeight - 65 - (window.innerHeight - 65) % grid - 1;
   gameState.lastTick = performance.now();
   gameState.lastRender = gameState.lastTick;
   gameState.tickLength = 200; //ms
@@ -170,7 +171,7 @@ function setup() {
     color1: "#ff0000",
     color2: "#004200",
     appearTime: 0,
-    lifeCycle: 200
+    lifeCycle: 300
   };
 
   for (var i = 0; i < gameState.snake.l; i++) {
@@ -439,9 +440,11 @@ function stopGame(handle) {
     GameOverAudio.play();
   }
 
-  document.body.style.background = "#ff0000";
+  canvas.style.background = "#ff0000";
   var snake = gameState.snake;
   snake.l++;
+  playButton.style.display = "block";
+  canvas.style.display = "none";
 }
 
 function queueUpdates(numTicks) {
@@ -451,8 +454,13 @@ function queueUpdates(numTicks) {
   }
 }
 
-setup();
-run();
+playButton.onclick = function () {
+  playButton.style.display = "none";
+  canvas.style.display = "block";
+  setup();
+  canvas.style.border = "3px solid #0be2c0";
+  run();
+};
 },{"../data/GameOver.mp3":"data/GameOver.mp3","../data/FoodEat.mp3":"data/FoodEat.mp3"}],"node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -481,7 +489,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55794" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57350" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

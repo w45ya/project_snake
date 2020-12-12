@@ -1,3 +1,7 @@
+.body{
+
+}
+
 .main-header, .container{
     font-size: 20px;
 }
@@ -19,13 +23,12 @@
 .container{
     display: flex;
     float: left;
-
     max-width: 100%;
     max-height: 100%;
     margin: auto;
-
     position: absolute;
 }
+
 
 
 /*# sourceMappingURL=/styles.956d002c.css.map */
