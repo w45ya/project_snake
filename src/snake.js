@@ -1,8 +1,8 @@
 const canvas = document.getElementById("cnvs");
 const gameState = {};
 const grid = 50;
-//const GameOverAudio = new Audio(./data/GameOver.mp3');
-//const FoodEat = new Audio(./data/FoodEat.mp3');
+//const GameOverAudio = new Audio('./data/GameOver.mp3');
+//const FoodEat = new Audio('./data/FoodEat.mp3');
 let audioUrl = require('../data/GameOver.mp3');
 const GameOverAudio = new Audio(audioUrl);
 audioUrl = require('../data/FoodEat.mp3');
@@ -174,7 +174,6 @@ function draw(tFrame) {
             superFruit.isOnScreenTimer = 0;
         }
     }
-    console.log(superFruit.timer, superFruit.appearTime)
 	if (snake.l<=0) {stopGame(gameState.stopCycle);}
     snake.cells.forEach(function (cell,index) {
         context.fillStyle = snake.color;
@@ -344,4 +343,3 @@ playButton.onclick = function(){
     canvas.style.border = "3px solid #0be2c0";
     run();
 };
-
