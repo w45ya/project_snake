@@ -1,34 +1,35 @@
-.body{
-
+body{
+    background: #000000;
 }
-
 .main-header, .container{
-    font-size: 20px;
+    font-size: 12px;
 }
 
 .main-header {
-    padding: 20px;
-    background: #2b4748;
-    color: aliceblue;
+    background: #003028;
+    color: #a0ffe5;
+    max-height: 75px;
 }
-.main-header > .login {
-    float: right;
-}
+
 .vertical {
-    top: 50%;
-    transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
+    transform: translateY(-22%);
 }
 
-.container{
-    display: flex;
-    float: left;
-    max-width: 100%;
-    max-height: 100%;
+#container{
+    width: 100%;
+    text-align:center;
+    position: fixed;
+    color: #00966b;
+}
+.button{
+    width: 200px;
+    background-color: #00966b;
+    color: white;
+    font-size: 70px;
+}
+canvas {
     margin: auto;
-    position: absolute;
+    display: block;
 }
-
-
 
 /*# sourceMappingURL=/styles.956d002c.css.map */

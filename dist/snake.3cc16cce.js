@@ -124,8 +124,8 @@ module.exports = "/FoodEat.fbf122c7.mp3";
 },{}],"src/snake.js":[function(require,module,exports) {
 var canvas = document.getElementById("cnvs");
 var gameState = {};
-var grid = 50; //const GameOverAudio = new Audio(./data/GameOver.mp3');
-//const FoodEat = new Audio(./data/FoodEat.mp3');
+var grid = 50; //const GameOverAudio = new Audio('./data/GameOver.mp3');
+//const FoodEat = new Audio('./data/FoodEat.mp3');
 
 var audioUrl = require('../data/GameOver.mp3');
 
@@ -134,19 +134,22 @@ audioUrl = require('../data/FoodEat.mp3');
 var FoodEat = new Audio(audioUrl);
 var playButton = document.getElementById('playButton');
 var FrameCount = 0;
-var SoundSet = 1;
 var ShowInfo = 1;
+var SoundSet = 1;
+var SoundChk = document.getElementById('soundChk');
+var Container = document.getElementById('container');
+var CanvasContainer = document.getElementById('canvas_container');
 
 function setup() {
   canvas.style.background = "#000000";
-  canvas.width = window.innerWidth - 20 - (window.innerWidth - 20) % grid - 1;
-  canvas.height = window.innerHeight - 65 - (window.innerHeight - 65) % grid - 1;
+  canvas.width = window.innerWidth - 25 - (window.innerWidth - 25) % grid - 1;
+  canvas.height = window.innerHeight - 90 - (window.innerHeight - 90) % grid - 1;
   gameState.lastTick = performance.now();
   gameState.lastRender = gameState.lastTick;
-  gameState.tickLength = 200; //ms
+  gameState.tickLength = 250; //ms
 
   gameState.snake = {
-    x: grid * 5,
+    x: 5 * grid,
     y: grid,
     vx: grid,
     vy: 0,
@@ -216,8 +219,8 @@ function freeCell(snake, food, antiFood, superFruit) {
       bool = 0;
 
   while (bool === 0) {
-    x = randomInt(1, gridX) * grid;
-    y = randomInt(1, gridY) * grid;
+    x = randomInt(0, gridX + 1) * grid;
+    y = randomInt(0, gridY + 1) * grid;
     bool = 1;
 
     for (var i = 0; i < snake.cells.length; i++) {
@@ -314,8 +317,6 @@ function draw(tFrame) {
       superFruit.isOnScreenTimer = 0;
     }
   }
-
-  console.log(superFruit.timer, superFruit.appearTime);
 
   if (snake.l <= 0) {
     stopGame(gameState.stopCycle);
@@ -479,6 +480,13 @@ function update(tick) {
   }
 }
 
+function queueUpdates(numTicks) {
+  for (var i = 0; i < numTicks; i++) {
+    gameState.lastTick = gameState.lastTick + gameState.tickLength;
+    update(gameState.lastTick);
+  }
+}
+
 function stopGame(handle) {
   window.cancelAnimationFrame(handle);
 
@@ -490,21 +498,21 @@ function stopGame(handle) {
   var snake = gameState.snake;
   snake.l++;
   setTimeout(function () {
-    playButton.style.display = "block";
-    canvas.style.display = "none";
+    Container.style.display = "block";
+    CanvasContainer.style.display = "none";
   }, 10500);
 }
 
-function queueUpdates(numTicks) {
-  for (var i = 0; i < numTicks; i++) {
-    gameState.lastTick = gameState.lastTick + gameState.tickLength;
-    update(gameState.lastTick);
-  }
-}
-
 playButton.onclick = function () {
-  playButton.style.display = "none";
-  canvas.style.display = "block";
+  Container.style.display = "none";
+  CanvasContainer.style.display = "block";
+
+  if (SoundChk.checked) {
+    SoundSet = 1;
+  } else {
+    SoundSet = 0;
+  }
+
   setup();
   canvas.style.border = "3px solid #0be2c0";
   run();
@@ -537,7 +545,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57350" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55690" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

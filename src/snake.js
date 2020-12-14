@@ -9,19 +9,22 @@ audioUrl = require('../data/FoodEat.mp3');
 const FoodEat = new Audio(audioUrl);
 const playButton = document.getElementById('playButton')
 let FrameCount = 0;
-let SoundSet = 1;
 let ShowInfo = 1;
+let SoundSet = 1;
+let SoundChk = document.getElementById('soundChk');
+let Container = document.getElementById('container');
+let CanvasContainer = document.getElementById('canvas_container');
 
 function setup() {
     canvas.style.background = "#000000";
-    canvas.width = window.innerWidth-20-((window.innerWidth-20)%grid)-1;
-    canvas.height = window.innerHeight-65-((window.innerHeight-65)%grid)-1;
+    canvas.width = window.innerWidth-25-((window.innerWidth-25)%grid)-1;
+    canvas.height = window.innerHeight-90-((window.innerHeight-90)%grid)-1;
     gameState.lastTick = performance.now();
     gameState.lastRender = gameState.lastTick;
-    gameState.tickLength = 200; //ms
+    gameState.tickLength = 250; //ms
 
     gameState.snake = {
-        x: grid*5,
+        x: 5*grid,
         y: grid,
         vx: grid,
         vy: 0,
@@ -86,8 +89,8 @@ function freeCell(snake,food,antiFood,superFruit){
     const gridY = Math.floor(canvas.height/grid);
     let x,y,bool = 0;
     while (bool===0) {
-        x = randomInt(1,gridX)*grid;
-        y = randomInt(1,gridY)*grid;
+        x = randomInt(0,gridX+1)*grid;
+        y = randomInt(0,gridY+1)*grid;
         bool = 1;
         for (let i = 0; i < snake.cells.length; i++) {
             if (x === snake.cells[i].x && y === snake.cells[i].y) {
@@ -316,18 +319,6 @@ function update(tick){
 
 }
 
-function stopGame(handle){
-    window.cancelAnimationFrame(handle);
-    if (SoundSet===1){GameOverAudio.play();}
-    canvas.style.background = "#ff0000";
-    const snake = gameState.snake;
-    snake.l++;
-    setTimeout(() => {
-        playButton.style.display = "block";
-        canvas.style.display = "none";
-    }, 10500);
-}
-
 function queueUpdates(numTicks){
     for (let i=0; i<numTicks; i++) {
         gameState.lastTick = gameState.lastTick + gameState.tickLength;
@@ -335,10 +326,22 @@ function queueUpdates(numTicks){
     }
 }
 
+function stopGame(handle){
+    window.cancelAnimationFrame(handle);
+    if (SoundSet===1){GameOverAudio.play();}
+    canvas.style.background = "#ff0000";
+    const snake = gameState.snake;
+    snake.l++;
+    setTimeout(() => {
+        Container.style.display = "block";
+        CanvasContainer.style.display = "none";
+    }, 10500);
+}
 
 playButton.onclick = function(){
-    playButton.style.display = "none";
-    canvas.style.display = "block";
+    Container.style.display = "none";
+    CanvasContainer.style.display = "block";
+    if (SoundChk.checked) {SoundSet = 1} else {SoundSet = 0}
     setup();
     canvas.style.border = "3px solid #0be2c0";
     run();
