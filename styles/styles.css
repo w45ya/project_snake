@@ -9,12 +9,18 @@ body{
     background: #003028;
     color: #a0ffe5;
     max-height: 75px;
+    font-weight: 900;
 }
 
 .vertical {
     transform: translateY(-22%);
 }
-
+#login_container{
+    width: 100%;
+    text-align:center;
+    position: fixed;
+    color: #00966b;
+}
 #container{
     width: 100%;
     text-align:center;

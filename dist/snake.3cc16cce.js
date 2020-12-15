@@ -133,12 +133,13 @@ var GameOverAudio = new Audio(audioUrl);
 audioUrl = require('../data/FoodEat.mp3');
 var FoodEat = new Audio(audioUrl);
 var playButton = document.getElementById('playButton');
-var FrameCount = 0;
-var ShowInfo = 1;
-var SoundSet = 1;
 var SoundChk = document.getElementById('soundChk');
 var Container = document.getElementById('container');
 var CanvasContainer = document.getElementById('canvas_container');
+var username = document.getElementById('login');
+var FrameCount = 0;
+var ShowInfo = 1;
+var SoundSet = 1;
 
 function setup() {
   canvas.style.background = "#000000";
@@ -495,8 +496,7 @@ function stopGame(handle) {
   }
 
   canvas.style.background = "#ff0000";
-  var snake = gameState.snake;
-  snake.l++;
+  console.log(username.value, gameState.snake.l);
   setTimeout(function () {
     Container.style.display = "block";
     CanvasContainer.style.display = "none";
@@ -545,7 +545,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60432" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64364" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

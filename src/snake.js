@@ -8,12 +8,13 @@ const GameOverAudio = new Audio(audioUrl);
 audioUrl = require('../data/FoodEat.mp3');
 const FoodEat = new Audio(audioUrl);
 const playButton = document.getElementById('playButton')
+const SoundChk = document.getElementById('soundChk');
+const Container = document.getElementById('container');
+const CanvasContainer = document.getElementById('canvas_container');
+const username = document.getElementById('login');
 let FrameCount = 0;
 let ShowInfo = 1;
 let SoundSet = 1;
-let SoundChk = document.getElementById('soundChk');
-let Container = document.getElementById('container');
-let CanvasContainer = document.getElementById('canvas_container');
 
 function setup() {
     canvas.style.background = "#000000";
@@ -330,8 +331,7 @@ function stopGame(handle){
     window.cancelAnimationFrame(handle);
     if (SoundSet===1){GameOverAudio.play();}
     canvas.style.background = "#ff0000";
-    const snake = gameState.snake;
-    snake.l++;
+    console.log(username.value, gameState.snake.l)
     setTimeout(() => {
         Container.style.display = "block";
         CanvasContainer.style.display = "none";

@@ -10,7 +10,7 @@
         <div class="vertical">
             <pre>
             <center>
-   _____             __           ______                  
+   ____              __           _____                   
   / ___/____  ____ _/ /_____     / ____/___ _____ ___  ___ 
   \__ \/ __ \/ __ `/ //_/ _ \   / / __/ __ `/ __ `__ \/ _ \
  ___/ / / / / /_/ / ,< /  __/  / /_/ / /_/ / / / / / /  __/
@@ -23,9 +23,17 @@
         <p><input id="playButton" type="button" class="button" value="▶"></p>
         <label><input id="soundChk" type="checkbox" class="checkbox"checked>Включить звук</label>
     </div>
+    <div id="login_container">
+        <form id="login_form">
+            <p> <label id="login_label">username <input type="text" value="" id="login"></label> </p>
+            <p> <label id="password_label">password <input type="password" value="" id="password"></label> </p>
+            <p><input id="loginButton" type="button" class="button" value="Login"></p>
+        </form>
+    </div>
     <div id="canvas_container">
         <canvas width="0%" height="0%" id="cnvs";></canvas>
-        <script src="src/snake.js"></script>
     </div>
+    <script src="src/snake.js"></script>
+    <script src="src/login.js"></script>
 </body>
 </html>
