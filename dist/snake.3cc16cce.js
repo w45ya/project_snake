@@ -452,6 +452,9 @@ function update(tick) {
       ShowInfo = 1;
     } else if (event.code === 'KeyO') {
       ShowInfo = 0;
+    } else if (event.code === 'Escape') {
+      SoundSet = 0;
+      stopGame(gameState.stopCycle);
     }
   });
   var gamepad = navigator.getGamepads()[0];
@@ -489,18 +492,22 @@ function queueUpdates(numTicks) {
 }
 
 function stopGame(handle) {
+  var timeout;
   window.cancelAnimationFrame(handle);
+  canvas.style.background = "#ff0000";
+  console.log(username.value, gameState.snake.l);
 
   if (SoundSet === 1) {
     GameOverAudio.play();
+    timeout = 10500;
+  } else {
+    timeout = 2000;
   }
 
-  canvas.style.background = "#ff0000";
-  console.log(username.value, gameState.snake.l);
   setTimeout(function () {
     Container.style.display = "block";
     CanvasContainer.style.display = "none";
-  }, 10500);
+  }, timeout);
 }
 
 playButton.onclick = function () {
@@ -545,7 +552,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64364" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58164" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

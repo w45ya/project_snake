@@ -36,6 +36,7 @@ body{
     border-style: solid;
     border-width: 4px;
     border-radius: 20px;
+    cursor:pointer;
 }
 .button:hover{
     background-color: #003028;
@@ -43,8 +44,18 @@ body{
 }
 .button:active{
     outline: none;
+    background-color: #001613;
+    color: #003028;
 }
-
+.checkbox, .soundChkLabel{
+    cursor:pointer;
+}
+.soundChkLabel:hover{
+    color: #a0ffe5;
+}
+.soundChkLabel:active{
+    color: #00966b;
+}
 canvas {
     margin: auto;
     display: block;

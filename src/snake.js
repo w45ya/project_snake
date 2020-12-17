@@ -284,16 +284,20 @@ function update(tick){
             snake.vy = 0;
         }
         else if (event.code === 'KeyZ') {
-            SoundSet=1
+            SoundSet = 1;
         }
         else if (event.code === 'KeyX') {
-            SoundSet=0
+            SoundSet = 0;
         }
         else if (event.code === 'KeyI') {
-            ShowInfo=1
+            ShowInfo = 1;
         }
         else if (event.code === 'KeyO') {
-            ShowInfo=0
+            ShowInfo = 0;
+        }
+        else if (event.code === 'Escape'){
+            SoundSet = 0;
+            stopGame(gameState.stopCycle);
         }
     })
     const gamepad = navigator.getGamepads()[0];
@@ -328,14 +332,21 @@ function queueUpdates(numTicks){
 }
 
 function stopGame(handle){
+    let timeout;
     window.cancelAnimationFrame(handle);
-    if (SoundSet===1){GameOverAudio.play();}
     canvas.style.background = "#ff0000";
     console.log(username.value, gameState.snake.l)
+    if (SoundSet===1){
+        GameOverAudio.play();
+        timeout = 10500;
+    }
+    else{
+        timeout = 2000;
+    }
     setTimeout(() => {
         Container.style.display = "block";
         CanvasContainer.style.display = "none";
-    }, 10500);
+    }, timeout);
 }
 
 playButton.onclick = function(){
