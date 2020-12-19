@@ -2055,13 +2055,12 @@ var SoundSet = 1;
 
 function setup() {
   canvas.style.background = "#000000";
+  canvas.width = window.innerWidth - 25 - (window.innerWidth - 25) % grid - 1;
 
   if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
-    canvas.width = window.innerWidth - 25 - (window.innerWidth - 25) % grid - 201;
-    canvas.height = window.innerHeight - 90 - (window.innerHeight - 90) % grid - 201;
+    canvas.height = window.innerHeight - 90 - (window.innerHeight - 90) % grid - 251;
     mobile_control.style.display = "block";
   } else {
-    canvas.width = window.innerWidth - 25 - (window.innerWidth - 25) % grid - 1;
     canvas.height = window.innerHeight - 90 - (window.innerHeight - 90) % grid - 1;
   }
 
@@ -2506,7 +2505,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63088" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64450" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
