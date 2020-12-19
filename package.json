@@ -6,7 +6,9 @@
   "scripts": {
     "start": "parcel serve index.html",
     "build": "parcel build index.html",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "predeploy": "rmdir dist /s /q && mkdir dist && parcel build index.html --public-url /project_snake",
+    "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
@@ -21,6 +23,7 @@
   "dependencies": {
     "axios": "^0.21.0",
     "babel": "^6.23.0",
+    "gh-pages": "^3.1.0",
     "parcel": "^1.12.4"
   }
 }

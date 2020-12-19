@@ -117,74 +117,57 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"node_modules/parcel/src/builtins/bundle-url.js":[function(require,module,exports) {
-var bundleURL = null;
+})({"src/highscore.js":[function(require,module,exports) {
+"use strict";
 
-function getBundleURLCached() {
-  if (!bundleURL) {
-    bundleURL = getBundleURL();
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.showTable = showTable;
+exports.addToScore = addToScore;
+var Container = document.getElementById('container');
+var table = document.createElement('table');
+var tbody = document.createElement('tbody');
+var highScores = [[1, 'loser'], [100, 'BeatMe'], [42, 'Answer']];
+
+function showTable() {
+  while (tbody.hasChildNodes()) {
+    tbody.removeChild(tbody.firstChild);
   }
 
-  return bundleURL;
-}
+  var row = document.createElement('tr');
+  var header = document.createElement('th');
+  header.textContent = "HighScore";
+  header.colSpan = "2";
+  row.appendChild(header);
+  tbody.appendChild(row);
 
-function getBundleURL() {
-  // Attempt to find the URL of the current script and use that as the base URL
-  try {
-    throw new Error();
-  } catch (err) {
-    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
+  for (var i = 0; i < highScores.length; i++) {
+    var vals = highScores[i];
 
-    if (matches) {
-      return getBaseURL(matches[0]);
-    }
-  }
+    var _row = document.createElement('tr');
 
-  return '/';
-}
+    for (var b = 0; b < vals.length; b++) {
+      var cell = document.createElement('td');
+      cell.textContent = vals[b];
 
-function getBaseURL(url) {
-  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
-}
-
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-},{}],"node_modules/parcel/src/builtins/css-loader.js":[function(require,module,exports) {
-var bundle = require('./bundle-url');
-
-function updateLink(link) {
-  var newLink = link.cloneNode();
-
-  newLink.onload = function () {
-    link.remove();
-  };
-
-  newLink.href = link.href.split('?')[0] + '?' + Date.now();
-  link.parentNode.insertBefore(newLink, link.nextSibling);
-}
-
-var cssTimeout = null;
-
-function reloadCSS() {
-  if (cssTimeout) {
-    return;
-  }
-
-  cssTimeout = setTimeout(function () {
-    var links = document.querySelectorAll('link[rel="stylesheet"]');
-
-    for (var i = 0; i < links.length; i++) {
-      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
-        updateLink(links[i]);
-      }
+      _row.appendChild(cell);
     }
 
-    cssTimeout = null;
-  }, 50);
+    tbody.appendChild(_row);
+  }
+
+  table.appendChild(tbody);
+  Container.appendChild(table);
 }
 
-module.exports = reloadCSS;
-},{"./bundle-url":"node_modules/parcel/src/builtins/bundle-url.js"}],"node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+function addToScore(a, b) {
+  highScores.push([a, b]);
+  highScores.sort(function (a, b) {
+    return b[0] - a[0];
+  });
+}
+},{}],"node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -212,7 +195,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55690" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62594" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -388,5 +371,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["node_modules/parcel/src/builtins/hmr-runtime.js"], null)
-//# sourceMappingURL=/index.js.map
+},{}]},{},["node_modules/parcel/src/builtins/hmr-runtime.js","src/highscore.js"], null)
+//# sourceMappingURL=/highscore.97f483fe.js.map

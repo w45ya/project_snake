@@ -36,6 +36,7 @@ loginButton.onclick = function(){
             container.style.display = "block";
         })
         .catch(function (error){
+            signOut()
             console.log(error);
         })
 }*/
