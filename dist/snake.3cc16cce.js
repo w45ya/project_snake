@@ -2042,7 +2042,12 @@ var playButton = document.getElementById('playButton');
 var SoundChk = document.getElementById('soundChk');
 var Container = document.getElementById('container');
 var CanvasContainer = document.getElementById('canvas_container');
-var username = document.getElementById('login'); //const username = loginModule.loggedIn();
+var username = document.getElementById('login');
+var mobile_control = document.getElementById('mobile_control');
+var leftButton = document.getElementById('leftButton');
+var rightButton = document.getElementById('rightButton');
+var upButton = document.getElementById('upButton');
+var downButton = document.getElementById('downButton'); //const username = loginModule.loggedIn();
 
 var FrameCount = 0;
 var ShowInfo = 1;
@@ -2050,8 +2055,16 @@ var SoundSet = 1;
 
 function setup() {
   canvas.style.background = "#000000";
-  canvas.width = window.innerWidth - 25 - (window.innerWidth - 25) % grid - 1;
-  canvas.height = window.innerHeight - 90 - (window.innerHeight - 90) % grid - 1;
+
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+    canvas.width = window.innerWidth - 25 - (window.innerWidth - 25) % grid - 201;
+    canvas.height = window.innerHeight - 90 - (window.innerHeight - 90) % grid - 201;
+    mobile_control.style.display = "block";
+  } else {
+    canvas.width = window.innerWidth - 25 - (window.innerWidth - 25) % grid - 1;
+    canvas.height = window.innerHeight - 90 - (window.innerHeight - 90) % grid - 1;
+  }
+
   gameState.lastTick = performance.now();
   gameState.lastRender = gameState.lastTick;
   gameState.tickLength = 250; //ms
@@ -2364,6 +2377,35 @@ function update(tick) {
       stopGame(gameState.stopCycle);
     }
   });
+
+  leftButton.onclick = function () {
+    if (snake.vx === 0 && (snake.l === 1 || snake.cells[1].x !== snake.cells[0].x - grid)) {
+      snake.vx = -grid;
+      snake.vy = 0;
+    }
+  };
+
+  rightButton.onclick = function () {
+    if (snake.vx === 0 && (snake.l === 1 || snake.cells[1].x !== snake.cells[0].x + grid)) {
+      snake.vx = grid;
+      snake.vy = 0;
+    }
+  };
+
+  upButton.onclick = function () {
+    if (snake.vy === 0 && (snake.l === 1 || snake.cells[1].y !== snake.cells[0].y - grid)) {
+      snake.vy = -grid;
+      snake.vx = 0;
+    }
+  };
+
+  downButton.onclick = function () {
+    if (snake.vy === 0 && (snake.l === 1 || snake.cells[1].y !== snake.cells[0].y + grid)) {
+      snake.vy = grid;
+      snake.vx = 0;
+    }
+  };
+
   var gamepad = navigator.getGamepads()[0];
   var gamepadUp = gamepad.buttons[12];
   var gamepadDown = gamepad.buttons[13];
@@ -2415,6 +2457,10 @@ function stopGame(handle) {
   setTimeout(function () {
     Container.style.display = "block";
     CanvasContainer.style.display = "none";
+
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+      mobile_control.style.display = "none";
+    }
   }, timeout);
 }
 
@@ -2460,7 +2506,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62594" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63088" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

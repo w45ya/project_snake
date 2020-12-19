@@ -14,7 +14,11 @@ const SoundChk = document.getElementById('soundChk');
 const Container = document.getElementById('container');
 const CanvasContainer = document.getElementById('canvas_container');
 const username = document.getElementById('login');
-
+const mobile_control = document.getElementById('mobile_control');
+const leftButton = document.getElementById('leftButton')
+const rightButton = document.getElementById('rightButton')
+const upButton = document.getElementById('upButton')
+const downButton = document.getElementById('downButton')
 //const username = loginModule.loggedIn();
 let FrameCount = 0;
 let ShowInfo = 1;
@@ -23,8 +27,16 @@ let SoundSet = 1;
 
 function setup() {
     canvas.style.background = "#000000";
-    canvas.width = window.innerWidth-25-((window.innerWidth-25)%grid)-1;
-    canvas.height = window.innerHeight-90-((window.innerHeight-90)%grid)-1;
+
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+        canvas.width = window.innerWidth-25-((window.innerWidth-25)%grid)-201;
+        canvas.height = window.innerHeight-90-((window.innerHeight-90)%grid)-201;
+        mobile_control.style.display = "block";
+    }
+    else{
+        canvas.width = window.innerWidth-25-((window.innerWidth-25)%grid)-1;
+        canvas.height = window.innerHeight-90-((window.innerHeight-90)%grid)-1;
+    }
     gameState.lastTick = performance.now();
     gameState.lastRender = gameState.lastTick;
     gameState.tickLength = 250; //ms
@@ -305,6 +317,31 @@ function update(tick){
             stopGame(gameState.stopCycle);
         }
     })
+
+    leftButton.onclick = function(){
+        if(snake.vx === 0 && (snake.l === 1 || snake.cells[1].x !== snake.cells[0].x - grid)){
+            snake.vx = -grid;
+            snake.vy = 0;
+        }
+    }
+    rightButton.onclick = function(){
+        if(snake.vx === 0 && (snake.l === 1 || snake.cells[1].x !== snake.cells[0].x + grid)){
+            snake.vx = grid;
+            snake.vy = 0;
+        }
+    }
+    upButton.onclick = function(){
+        if(snake.vy === 0 && (snake.l === 1 || snake.cells[1].y !== snake.cells[0].y - grid)){
+            snake.vy = -grid;
+            snake.vx = 0;
+        }
+    }
+    downButton.onclick = function() {
+        if (snake.vy === 0 && (snake.l === 1 || snake.cells[1].y !== snake.cells[0].y + grid)) {
+            snake.vy = grid;
+            snake.vx = 0;
+        }
+    }
     const gamepad = navigator.getGamepads()[0];
     const gamepadUp = gamepad.buttons[12];
     const gamepadDown = gamepad.buttons[13];
@@ -352,6 +389,9 @@ function stopGame(handle){
     setTimeout(() => {
         Container.style.display = "block";
         CanvasContainer.style.display = "none";
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+            mobile_control.style.display = "none";
+        }
     }, timeout);
 
 }
