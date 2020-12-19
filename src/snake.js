@@ -1,3 +1,4 @@
+import loginModule from './login'
 const canvas = document.getElementById("cnvs");
 const gameState = {};
 const grid = 50;
@@ -12,6 +13,7 @@ const SoundChk = document.getElementById('soundChk');
 const Container = document.getElementById('container');
 const CanvasContainer = document.getElementById('canvas_container');
 const username = document.getElementById('login');
+//const username = loginModule.loggedIn();
 let FrameCount = 0;
 let ShowInfo = 1;
 let SoundSet = 1;

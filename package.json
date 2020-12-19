@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/w45ya/project_snake#readme",
   "dependencies": {
+    "axios": "^0.21.0",
     "babel": "^6.23.0",
     "parcel": "^1.12.4"
   }

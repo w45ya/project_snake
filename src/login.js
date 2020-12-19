@@ -1,14 +1,49 @@
+import Axios from 'axios'
+
 const container = document.getElementById('container');
 const login_container = document.getElementById('login_container');
 const loginButton = document.getElementById('loginButton');
-const login = document.getElementById('login')
+const inputLogin = document.getElementById('login')
+const inputPassword = document.getElementById('password')
+var login = null;
 container.style.display = "none";
 loginButton.style.fontSize = "20px";
 loginButton.style.height = "50px";
 
 
+export function signIn(username){
+    login = username;
+    console.log("Вошёл пользователь");
+}
+
+export function signOut(){
+    login = null;
+    console.log("Вышел пользователь");
+}
+
+export function loggedIn(){
+    return login;
+}
+/*
 loginButton.onclick = function(){
-    if (login.value != ''){
+    const axios = require('axios').default;
+    axios.post('!!!WE NEED URL!!!',{
+        login: inputLogin.value,
+        password: inputPassword.value
+    })
+        .then(function (response){
+            signIn(response.data.name);
+            login_container.style.display = "none";
+            container.style.display = "block";
+        })
+        .catch(function (error){
+            console.log(error);
+        })
+}*/
+
+
+loginButton.onclick = function(){
+    if (inputLogin.value != ''){
         login_container.style.display = "none";
         container.style.display = "block";
     }
