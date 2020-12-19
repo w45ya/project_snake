@@ -1,4 +1,5 @@
-import loginModule from './login'
+import * as loginModule from './login'
+import * as highScore from './highscore.js'
 const canvas = document.getElementById("cnvs");
 const gameState = {};
 const grid = 50;
@@ -13,10 +14,12 @@ const SoundChk = document.getElementById('soundChk');
 const Container = document.getElementById('container');
 const CanvasContainer = document.getElementById('canvas_container');
 const username = document.getElementById('login');
+
 //const username = loginModule.loggedIn();
 let FrameCount = 0;
 let ShowInfo = 1;
 let SoundSet = 1;
+
 
 function setup() {
     canvas.style.background = "#000000";
@@ -323,7 +326,6 @@ function update(tick){
         snake.vy = 0;
         snake.vx = grid;
     }
-
 }
 
 function queueUpdates(numTicks){
@@ -335,9 +337,11 @@ function queueUpdates(numTicks){
 
 function stopGame(handle){
     let timeout;
+    highScore.addToScore(gameState.snake.l,username.value);
+    highScore.showTable();
     window.cancelAnimationFrame(handle);
     canvas.style.background = "#ff0000";
-    console.log(username.value, gameState.snake.l)
+
     if (SoundSet===1){
         GameOverAudio.play();
         timeout = 10500;
@@ -349,7 +353,9 @@ function stopGame(handle){
         Container.style.display = "block";
         CanvasContainer.style.display = "none";
     }, timeout);
+
 }
+
 
 playButton.onclick = function(){
     Container.style.display = "none";

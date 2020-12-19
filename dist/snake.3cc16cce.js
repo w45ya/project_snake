@@ -1962,16 +1962,70 @@ loginButton.onclick = function () {
     container.style.display = "block";
   }
 };
-},{"axios":"node_modules/axios/index.js"}],"data/GameOver.mp3":[function(require,module,exports) {
+},{"axios":"node_modules/axios/index.js"}],"src/highscore.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.showTable = showTable;
+exports.addToScore = addToScore;
+var Container = document.getElementById('container');
+var table = document.createElement('table');
+var tbody = document.createElement('tbody');
+var highScores = [[1, 'loser'], [100, 'BeatMe'], [42, 'Answer']];
+
+function showTable() {
+  while (tbody.hasChildNodes()) {
+    tbody.removeChild(tbody.firstChild);
+  }
+
+  var row = document.createElement('tr');
+  var header = document.createElement('th');
+  header.textContent = "HighScore";
+  header.colSpan = "2";
+  row.appendChild(header);
+  tbody.appendChild(row);
+
+  for (var i = 0; i < highScores.length; i++) {
+    var vals = highScores[i];
+
+    var _row = document.createElement('tr');
+
+    for (var b = 0; b < vals.length; b++) {
+      var cell = document.createElement('td');
+      cell.textContent = vals[b];
+
+      _row.appendChild(cell);
+    }
+
+    tbody.appendChild(_row);
+  }
+
+  table.appendChild(tbody);
+  Container.appendChild(table);
+}
+
+function addToScore(a, b) {
+  highScores.push([a, b]);
+  highScores.sort(function (a, b) {
+    return b[0] - a[0];
+  });
+}
+},{}],"data/GameOver.mp3":[function(require,module,exports) {
 module.exports = "/GameOver.828ccf7b.mp3";
 },{}],"data/FoodEat.mp3":[function(require,module,exports) {
 module.exports = "/FoodEat.fbf122c7.mp3";
 },{}],"src/snake.js":[function(require,module,exports) {
 "use strict";
 
-var _login = _interopRequireDefault(require("./login"));
+var loginModule = _interopRequireWildcard(require("./login"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var highScore = _interopRequireWildcard(require("./highscore.js"));
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 var canvas = document.getElementById("cnvs");
 var gameState = {};
@@ -2345,9 +2399,10 @@ function queueUpdates(numTicks) {
 
 function stopGame(handle) {
   var timeout;
+  highScore.addToScore(gameState.snake.l, username.value);
+  highScore.showTable();
   window.cancelAnimationFrame(handle);
   canvas.style.background = "#ff0000";
-  console.log(username.value, gameState.snake.l);
 
   if (SoundSet === 1) {
     GameOverAudio.play();
@@ -2376,7 +2431,7 @@ playButton.onclick = function () {
   canvas.style.border = "3px solid #0be2c0";
   run();
 };
-},{"./login":"src/login.js","../data/GameOver.mp3":"data/GameOver.mp3","../data/FoodEat.mp3":"data/FoodEat.mp3"}],"node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./login":"src/login.js","./highscore.js":"src/highscore.js","../data/GameOver.mp3":"data/GameOver.mp3","../data/FoodEat.mp3":"data/FoodEat.mp3"}],"node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -2404,7 +2459,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49673" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57303" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -1,5 +1,4 @@
 import Axios from 'axios'
-
 const container = document.getElementById('container');
 const login_container = document.getElementById('login_container');
 const loginButton = document.getElementById('loginButton');
@@ -40,7 +39,6 @@ loginButton.onclick = function(){
             console.log(error);
         })
 }*/
-
 
 loginButton.onclick = function(){
     if (inputLogin.value != ''){
