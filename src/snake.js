@@ -1,4 +1,3 @@
-import * as loginModule from './login'
 import * as highScore from './highscore.js'
 const canvas = document.getElementById("cnvs");
 const gameState = {};
@@ -10,7 +9,8 @@ const GameOverAudio = new Audio(audioUrl);
 audioUrl = require('../data/FoodEat.mp3');
 const FoodEat = new Audio(audioUrl);
 const playButton = document.getElementById('playButton')
-const SoundChk = document.getElementById('soundChk');
+const soundChk = document.getElementById('soundChk');
+const easymodeChk = document.getElementById('easymodeChk');
 const Container = document.getElementById('container');
 const CanvasContainer = document.getElementById('canvas_container');
 const username = document.getElementById('login');
@@ -19,26 +19,25 @@ const leftButton = document.getElementById('leftButton')
 const rightButton = document.getElementById('rightButton')
 const upButton = document.getElementById('upButton')
 const downButton = document.getElementById('downButton')
-//const username = loginModule.loggedIn();
 let FrameCount = 0;
-let ShowInfo = 1;
+let ShowInfo = 0;
 let SoundSet = 1;
-
+let EasyMode = 1;
 
 function setup() {
     canvas.style.background = "#000000";
-    canvas.width = window.innerWidth-25-((window.innerWidth-25)%grid)-1;
+    canvas.width = window.innerWidth-25-((window.innerWidth-25)%grid);
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
-        canvas.height = window.innerHeight-90-((window.innerHeight-90)%grid)-251;
+        canvas.height = window.innerHeight-90-((window.innerHeight-90)%grid)-250;
         mobile_control.style.display = "block";
     }
     else{
-        canvas.height = window.innerHeight-90-((window.innerHeight-90)%grid)-1;
+        canvas.height = window.innerHeight-90-((window.innerHeight-90)%grid);
     }
     gameState.lastTick = performance.now();
     gameState.lastRender = gameState.lastTick;
     gameState.tickLength = 250; //ms
-
+    FrameCount = 0;
     gameState.snake = {
         x: 5*grid,
         y: grid,
@@ -105,8 +104,8 @@ function freeCell(snake,food,antiFood,superFruit){
     const gridY = Math.floor(canvas.height/grid);
     let x,y,bool = 0;
     while (bool===0) {
-        x = randomInt(0,gridX+1)*grid;
-        y = randomInt(0,gridY+1)*grid;
+        x = randomInt(0,gridX)*grid;
+        y = randomInt(0,gridY)*grid;
         bool = 1;
         for (let i = 0; i < snake.cells.length; i++) {
             if (x === snake.cells[i].x && y === snake.cells[i].y) {
@@ -195,6 +194,10 @@ function draw(tFrame) {
     }
 	if (snake.l<=0) {stopGame(gameState.stopCycle);}
     snake.cells.forEach(function (cell,index) {
+        if (cell.y >= canvas.height) {cell.y = 0;}
+        else if (cell.y < 0) {cell.y = canvas.height-grid;}
+        else if (cell.x >= canvas.width) {cell.x = 0;}
+        else if (cell.x < 0) {cell.x = canvas.width-grid;}
         context.fillStyle = snake.color;
         context.fillRect(cell.x, cell.y, grid, grid);
         context.fillStyle = '#000000';
@@ -265,9 +268,26 @@ function draw(tFrame) {
     })
     if (ShowInfo===1){
         context.fillStyle = "#ffffff";
+        context.font = "10px Arial";
         context.fillText(`Frames: `+FrameCount,0,10);
         context.fillText(`SnakeLength: `+snake.l,0,20);
         context.fillText(`SoundSet: `+SoundSet,0,30);
+        context.fillText(`EasyMode: `+EasyMode,0,40);
+        context.fillText('Snake x: '+snake.x,0,50);
+        context.fillText('Snake y: '+snake.y,0,60);
+        context.fillText('Snake vx: '+snake.vx,0,70);
+        context.fillText('Snake vy: '+snake.vy,0,80);
+        context.fillText('food x: '+food.x,0,90);
+        context.fillText('food y: '+food.y,0,100);
+        context.fillText('antiFood x: '+antiFood.x,0,110);
+        context.fillText('antiFood y: '+antiFood.y,0,120);
+        context.fillText('superFruit x: '+superFruit.x,0,130);
+        context.fillText('superFruit y: '+superFruit.y,0,140);
+    }
+	else {
+        context.fillStyle = "#00966b";
+        context.font = "30px Arial";
+        context.fillText(`Score: `+snake.l,0,30);
     }
 }
 
@@ -277,8 +297,16 @@ function update(tick){
     snake.y += snake.vy;
     snake.cells.unshift({ x: snake.x, y: snake.y });
     if (snake.cells.length > snake.l) { snake.cells.pop(); }
-    if (snake.y > canvas.height || snake.y < 0 || snake.x > canvas.width || snake.x < 0) {
-        stopGame(gameState.stopCycle);
+    if (EasyMode === 0){
+        if (snake.y > canvas.height || snake.y < 0 || snake.x > canvas.width || snake.x < 0) {
+            stopGame(gameState.stopCycle);
+        }
+    }
+    else{
+        if (snake.y >= canvas.height) {snake.y = 0;}
+        else if (snake.y < 0) {snake.y = canvas.height-grid;}
+        else if (snake.x >= canvas.width) {snake.x = 0;}
+        else if (snake.x < 0) {snake.x = canvas.width-grid;}
     }
 
     document.addEventListener('keydown', event =>{
@@ -397,7 +425,8 @@ function stopGame(handle){
 playButton.onclick = function(){
     Container.style.display = "none";
     CanvasContainer.style.display = "block";
-    if (SoundChk.checked) {SoundSet = 1} else {SoundSet = 0}
+    if (soundChk.checked) {SoundSet = 1} else {SoundSet = 0}
+    if (easymodeChk.checked) {EasyMode = 1} else {EasyMode = 0}
     setup();
     canvas.style.border = "3px solid #0be2c0";
     run();
