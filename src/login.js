@@ -23,11 +23,11 @@ export function signOut(){
 export function loggedIn(){
     return login;
 }
-/*
+
 loginButton.onclick = function(){
     const axios = require('axios').default;
-    axios.post('!!!WE NEED URL!!!',{
-        login: inputLogin.value,
+    axios.post('http://ng-2020-fall-meetings.azurewebsites.net/api/Authentication',{
+        userName: inputLogin.value,
         password: inputPassword.value
     })
         .then(function (response){
@@ -39,11 +39,11 @@ loginButton.onclick = function(){
             signOut()
             console.log(error);
         })
-}*/
-
+}
+/*
 loginButton.onclick = function(){
     if (inputLogin.value != ''){
         login_container.style.display = "none";
         container.style.display = "block";
     }
-}
+}*/
