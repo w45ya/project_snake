@@ -26,7 +26,7 @@ export function loggedIn(){
 
 loginButton.onclick = function(){
     const axios = require('axios').default;
-    axios.post('http://ng-2020-fall-meetings.azurewebsites.net/api/Authentication',{
+    axios.post('https://ng-2020-fall-meetings.azurewebsites.net/api/Authentication',{
         userName: inputLogin.value,
         password: inputPassword.value
     })
