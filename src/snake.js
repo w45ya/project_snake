@@ -194,10 +194,17 @@ function draw(tFrame) {
     }
 	if (snake.l<=0) {stopGame(gameState.stopCycle);}
     snake.cells.forEach(function (cell,index) {
-        if (cell.y >= canvas.height) {cell.y = 0;}
-        else if (cell.y < 0) {cell.y = canvas.height-grid;}
-        else if (cell.x >= canvas.width) {cell.x = 0;}
-        else if (cell.x < 0) {cell.x = canvas.width-grid;}
+        if (EasyMode === 1) {
+            if (cell.y >= canvas.height) {
+                cell.y = 0;
+            } else if (cell.y < 0) {
+                cell.y = canvas.height - grid;
+            } else if (cell.x >= canvas.width) {
+                cell.x = 0;
+            } else if (cell.x < 0) {
+                cell.x = canvas.width - grid;
+            }
+        }
         context.fillStyle = snake.color;
         context.fillRect(cell.x, cell.y, grid, grid);
         context.fillStyle = '#000000';
@@ -298,7 +305,7 @@ function update(tick){
     snake.cells.unshift({ x: snake.x, y: snake.y });
     if (snake.cells.length > snake.l) { snake.cells.pop(); }
     if (EasyMode === 0){
-        if (snake.y > canvas.height || snake.y < 0 || snake.x > canvas.width || snake.x < 0) {
+        if (snake.y >= canvas.height || snake.y < 0 || snake.x >= canvas.width || snake.x < 0) {
             stopGame(gameState.stopCycle);
         }
     }
