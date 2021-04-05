@@ -26,7 +26,7 @@ export function loggedIn(){
 
 loginButton.onclick = function(){
     const axios = require('axios').default;
-    axios.post('https://ng-2020-fall-meetings.azurewebsites.net/api/Authentication',{
+    /* axios.post('https://ng-2020-fall-meetings.azurewebsites.net/api/Authentication',{
         userName: inputLogin.value,
         password: inputPassword.value
     })
@@ -38,12 +38,13 @@ loginButton.onclick = function(){
         .catch(function (error){
             signOut()
             console.log(error);
-        })
-}
-/*
-loginButton.onclick = function(){
-    if (inputLogin.value != ''){
+        }) */
+    if ((inputLogin.value === inputPassword.value) && (inputLogin.value != '')){
+        signIn(inputLogin.value);
         login_container.style.display = "none";
         container.style.display = "block";
     }
-}*/
+    else {
+        signOut();
+    }
+}
